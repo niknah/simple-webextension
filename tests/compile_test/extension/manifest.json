@@ -1,0 +1,47 @@
+{
+  "name": "test",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://dunno.com/blank.html"],
+      "js": ["content.js"]
+    }
+  ],
+  "options_ui": {
+    "page": "options.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "userAgents": {
+    "chrome": {
+      "manifest_version": 3,
+      "web_accessible_resources": [{
+        "resources": ["browser.js"],
+        "matches": ["https://dunno.com/*"],
+        "use_dynamic_url": true
+      }],
+      "action": {
+        "default_icon": {
+          "16": "popup.png"
+        },
+        "default_popup": "popup.html"
+      }
+    },
+    "firefox": {
+      "manifest_version": 2,
+      "browser_action": {
+        "default_icon": "popup.png",
+        "default_title": "Popup",
+        "default_popup": "popup.html"
+      },
+      "background": {
+        "scripts": ["background.js"]
+      }
+    }
+  }
+}

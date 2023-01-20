@@ -1,0 +1,31 @@
+{
+  "name": "simple-webextension",
+  "type": "module",
+  "main": "lib/SimpleWebExtensionUtil.js",
+  "dependencies": {
+    "@babel/generator": "^7.20.7",
+    "@babel/parser": "^7.20.7",
+    "adm-zip": "^0.5.10",
+    "commander": "^9.4.1",
+    "esbuild": "^0.17.0",
+    "eslint": "^8.32.0",
+    "jest": "^29.3.1",
+    "playwright": "^1.29.2",
+    "resolve": "^1.22.1",
+    "sync-directory": "^5.1.9",
+    "uglify-js": "^3.17.4",
+    "web-ext": "^7.4.0"
+  },
+  "devDependencies": {
+    "eslint-config-xo-space": "^0.33.0"
+  },
+  "bin": {
+    "webext-cli": "./compile/webext-cli"
+  },
+  "jest": {
+    "transform": {}
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  }
+}
