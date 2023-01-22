@@ -27,9 +27,7 @@ export class BuildWebExtension {
 
   static listDir(directory) {
     fs.readdir(directory, (err, files) => {
-        files.forEach(file => {
-            console.log(file);
-        });
+        console.log('dir', directory, files.join(', '));
     });
   }
 
@@ -67,8 +65,8 @@ export class BuildWebExtension {
           });
 
           const includeDirsAll = [path.join(dir, 'lib'), importerDir, srcDir, ...includeDirs];
-          this.listDir(dir);
-          this.listDir(path.join(dir, 'lib'));
+          BuildWebExtension.listDir(dir);
+          BuildWebExtension.listDir(path.join(dir, 'lib'));
 
           for (const includeDir of includeDirsAll) {
             p = resolvePathPromise(p, includeDir, args);
