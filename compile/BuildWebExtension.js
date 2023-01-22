@@ -69,6 +69,12 @@ export class BuildWebExtension {
           });
 
           const includeDirsAll = [path.join(dir, 'lib'), importerDir, srcDir, ...includeDirs];
+          BuildWebExtension.listDir(path.join(process.cwd(), "."));
+          BuildWebExtension.listDir(path.join(process.cwd(), ".."));
+          BuildWebExtension.listDir(path.join(process.cwd(), "../.."));
+          BuildWebExtension.listDir(path.join(process.cwd(), "../../.."));
+          BuildWebExtension.listDir(path.join(process.cwd(), "../../../node_modules"));
+          BuildWebExtension.listDir(path.join(process.cwd(), "../../../node_modules/simple-webextension"));
           BuildWebExtension.listDir(dir);
           BuildWebExtension.listDir(path.join(dir, 'lib'));
 
