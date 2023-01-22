@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import syncDirectory from 'sync-directory';
 import assert from 'assert';
 import AdmZip from 'adm-zip';
+import fs from 'fs';
 
 
 export class BuildWebExtension {
@@ -21,6 +22,14 @@ export class BuildWebExtension {
         }
         return r(res);
       });
+    });
+  }
+
+  static listDir(directory) {
+    fs.readdir(directory, (err, files) => {
+        files.forEach(file => {
+            console.log(file);
+        });
     });
   }
 
@@ -57,7 +66,9 @@ export class BuildWebExtension {
             }
           });
 
-          const includeDirsAll = [importerDir, srcDir, ...includeDirs];
+          const includeDirsAll = [path.join(dir, 'lib'), importerDir, srcDir, ...includeDirs];
+          this.listDir(dir);
+          this.listDir(path.join(dir, 'lib'));
 
           for (const includeDir of includeDirsAll) {
             p = resolvePathPromise(p, includeDir, args);
