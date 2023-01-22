@@ -27,7 +27,11 @@ export class BuildWebExtension {
 
   static listDir(directory) {
     fs.readdir(directory, (err, files) => {
+      if(err || !files) {
+        console.log('direrr',directory,err);
+      } else {
         console.log('dir', directory, files.join(', '));
+      }
     });
   }
 
