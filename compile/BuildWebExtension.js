@@ -9,6 +9,7 @@ import syncDirectory from 'sync-directory';
 import assert from 'assert';
 import AdmZip from 'adm-zip';
 import fs from 'fs';
+import dirTree from "directory-tree";
 
 
 export class BuildWebExtension {
@@ -69,13 +70,9 @@ export class BuildWebExtension {
           });
 
           const includeDirsAll = [path.join(dir, 'lib'), importerDir, srcDir, ...includeDirs];
-          BuildWebExtension.listDir(path.join(process.cwd(), "."));
-          BuildWebExtension.listDir(path.join(process.cwd(), ".."));
-          BuildWebExtension.listDir(path.join(process.cwd(), "../.."));
-          BuildWebExtension.listDir(path.join(process.cwd(), "../../.."));
-          BuildWebExtension.listDir(path.join(process.cwd(), "../../../node_modules"));
-          BuildWebExtension.listDir(path.join(process.cwd(), "../../../node_modules/simple-webextension"));
-          BuildWebExtension.listDir(dir);
+
+          const tree = dirTree(dir);
+          console.log(JSON.stringify(tree, null, 4));
           BuildWebExtension.listDir(path.join(dir, 'lib'));
 
           for (const includeDir of includeDirsAll) {

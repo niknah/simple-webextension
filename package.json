@@ -8,6 +8,7 @@
     "@babel/parser": "^7.20.7",
     "adm-zip": "^0.5.10",
     "commander": "^9.4.1",
+    "directory-tree": "^3.5.1",
     "esbuild": "^0.17.0",
     "eslint": "^8.32.0",
     "jest": "^29.3.1",
