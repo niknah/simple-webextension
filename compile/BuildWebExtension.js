@@ -141,7 +141,8 @@ export class BuildWebExtension {
     }).then((compileInfos) => {
       const urlMatch = options.urlMatch || 'https://YOUR_WEBSITE.COM/*';
       return this.copyBlankManifest({name: options.name, urlMatch}, allUserAgentPath)
-        .then(() => { return compileInfos; });
+        .then(() => { 
+          return compileInfos; });
     }).then((compileInfos) => {
       let p = Promise.resolve();
       const copyFiles = (p, userAgent, compileInfo) => {
@@ -267,21 +268,20 @@ export class BuildWebExtension {
     const dir = path.dirname(fileURLToPath(import.meta.url));
     const srcManifest = path.join(dir, '../extension', manifest);
     const destManifest = path.join(destDir, manifest);
-    return fsPromises.stat(destManifest).catch(() => {
+    return fsPromises.stat(destManifest)
+    .catch(() => {
+    }).then(() => {
       return fsPromises.mkdir(destDir, {recursive: true})
-        .finally(() => {
-        return fsPromises.readFile(srcManifest).then((code) => {
-          return this.formatStringLiteral(
-            code.toString('utf-8'),
-            options
-          );
-        }).then(
-          (code) => {
-            return fsPromises.writeFile(destManifest, code)
-          }
-        );
-      }).catch(() => {});
-    });
+      .catch(() => {
+      });
+    }).then(() => fsPromises.readFile(srcManifest)
+    ).then((code) => this.formatStringLiteral(
+        code.toString('utf-8'),
+        options
+      )
+    ).then(
+      (code) => fsPromises.writeFile(destManifest, code)
+    );
   }
 
   static compileForUserAgent(splitWebExtension, name, userAgent, destDir, codeStr) {
