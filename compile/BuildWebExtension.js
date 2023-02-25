@@ -78,12 +78,24 @@ export class BuildWebExtension {
       },
     };
 
-    return esbuild.build({
-      entryPoints: [path.join(srcDir, file)],
-      outfile: path.join(destDir, file),
-      plugins: [exampleOnResolvePlugin],
-      bundle: true,
-    });
+    const srcFileFullPath = path.join(srcDir, file);
+    const destFileFullPath = path.join(destDir, file)
+    return fsPromises.stat(srcFileFullPath)
+      .then(() => true)
+      .catch(() => false)
+      .then((exists) => {
+        if (exists) {
+          return esbuild.build({
+            entryPoints: [srcFileFullPath],
+            outfile: destFileFullPath,
+            plugins: [exampleOnResolvePlugin],
+            bundle: true,
+          })
+        } else {
+          // write a blank file incase browser.js is included in content.js
+          return fsPromises.writeFile(destFileFullPath, "");
+        }
+      });
   }
 
   static buildAllJs(srcDir, destDir, scriptTypes, includeDirs) {
@@ -142,7 +154,8 @@ export class BuildWebExtension {
       const urlMatch = options.urlMatch || 'https://YOUR_WEBSITE.COM/*';
       return this.copyBlankManifest({name: options.name, urlMatch}, allUserAgentPath)
         .then(() => { 
-          return compileInfos; });
+          return compileInfos; 
+        });
     }).then((compileInfos) => {
       let p = Promise.resolve();
       const copyFiles = (p, userAgent, compileInfo) => {

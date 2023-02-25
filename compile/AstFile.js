@@ -62,6 +62,9 @@ export class AstFile {
   }
 
   makeAst(scriptType, scriptGlobalId) {
+    if (this.messageFunctions.length === 0) {
+      return null;
+    }
     const createSimpleWebExt = this.getFileTypeClassInit(scriptType, scriptGlobalId);
 
     let functionsStr = '';

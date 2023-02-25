@@ -122,6 +122,8 @@ export class SplitWebExtension {
     const scriptTypesCount = options.scriptTypes ? Object.keys(options.scriptTypes) : 0;
     if (!options.scriptTypes || scriptTypesCount === 0) {
       // function to run on all scripts
+      this.checkAstForComments(functionAst.body);
+
       this.addToScriptTypes(options, functionAst, destClassAsts);
     } else if (scriptTypesCount > 1) {
       this.addError(`Function cannot have more than one script type.  ${fName}, line: ${functionAst.start}, scriptTypes: ${options.scriptType}`);
@@ -188,6 +190,17 @@ export class SplitWebExtension {
       for (const b of ast) {
         this.checkAstForComments(b);
       }
+      return;
+    } 
+
+    let optionsCount=0;
+    this.getOptionsFromComments(ast, () => { ++optionsCount; });
+    if(optionsCount > 0) {
+      this.addError('Has simplewebext comment in the wrong place, line:' + ast.loc.start.line);
+    }
+
+    if(ast.expression) {
+      return this.checkAstForComments(ast.expression);
     } 
     if(ast.argument) {
       return this.checkAstForComments(ast.argument);
@@ -199,11 +212,6 @@ export class SplitWebExtension {
       return this.checkAstForComments(ast.body);
     } 
 
-    let optionsCount=0;
-    this.getOptionsFromComments(ast, () => { ++optionsCount; });
-    if(optionsCount > 0) {
-      this.addError('Has simplewebext comment in the wrong place, line:' + ast.loc.start.line);
-    }
     return;
   }
 
@@ -244,7 +252,7 @@ export class SplitWebExtension {
         this.addCall(className, b, destClassAsts);
       } else {
         const classOptions = this.processOptionsFromComments(b);
-
+        this.checkAstForComments(b);
         this.addToScriptTypes(classOptions, b, destClassAsts);
       }
     }
@@ -268,9 +276,16 @@ export class SplitWebExtension {
   }
 
   generate(destDir, scriptGlobalId, code) {
-    const promise = Promise.resolve(true);
+    let promise = Promise.resolve(true);
     // eslint-disable-next-line guard-for-in
     for (const n in this.astFiles) {
+      const astFile = this.astFiles[n];
+
+      const astFileInfo = astFile.makeAst(n, scriptGlobalId);
+      if (!astFileInfo) {
+        continue;
+      }
+
       // @babel/generator does not have generate.default in svelte
       // In node, generate is a class, generate.default is a function
       const fString = (generate.default || generate )(
@@ -280,10 +295,6 @@ export class SplitWebExtension {
         },
         code,
       ).code;
-
-      const astFile = this.astFiles[n];
-
-      const astFileInfo = astFile.makeAst(n, scriptGlobalId);
 
       const nUcFirst = AstFile.capitalize(n);
 
@@ -296,7 +307,7 @@ export class SplitWebExtension {
       ;
     
       const destFile = path.join(destDir, n + '.js');
-      promise.then(fsPromises.writeFile(destFile, js));
+      promise = promise.then(fsPromises.writeFile(destFile, js));
     }
 
     return promise;
