@@ -270,18 +270,18 @@ export class BuildWebExtension {
     const destManifest = path.join(destDir, manifest);
     return fsPromises.stat(destManifest)
     .catch(() => {
-    }).then(() => {
       return fsPromises.mkdir(destDir, {recursive: true})
-      .catch(() => {
-      });
-    }).then(() => fsPromises.readFile(srcManifest)
-    ).then((code) => this.formatStringLiteral(
-        code.toString('utf-8'),
-        options
-      )
-    ).then(
-      (code) => fsPromises.writeFile(destManifest, code)
-    );
+        .catch(() => {
+        })
+        .then(() => fsPromises.readFile(srcManifest)
+        ).then((code) => this.formatStringLiteral(
+            code.toString('utf-8'),
+            options
+          )
+        ).then(
+          (code) => fsPromises.writeFile(destManifest, code)
+        );
+    });
   }
 
   static compileForUserAgent(splitWebExtension, name, userAgent, destDir, codeStr) {
