@@ -12,6 +12,10 @@ export class AstFile {
     this.messageFunctions.push({func, className, funcName});
   }
 
+  hasMessageFunctions() {
+    return this.messageFunctions.length > 0;
+  }
+
   static getAstBody(classAst) {
     let body = Array.isArray(classAst.body) ? classAst.body : null;
     if (!body && classAst.body && Array.isArray(classAst.body.body)) {
@@ -61,8 +65,8 @@ export class AstFile {
     return `${className}__${fName}`;
   }
 
-  makeAst(scriptType, scriptGlobalId) {
-    if (this.messageFunctions.length === 0) {
+  makeAst(scriptType, scriptGlobalId, options) {
+    if (!this.hasMessageFunctions() && !options.alwaysMake) {
       return null;
     }
     const createSimpleWebExt = this.getFileTypeClassInit(scriptType, scriptGlobalId);

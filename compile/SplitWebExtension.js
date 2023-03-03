@@ -277,11 +277,19 @@ export class SplitWebExtension {
 
   generate(destDir, scriptGlobalId, code) {
     let promise = Promise.resolve(true);
+    const browserAstFile = this.astFiles.browser;
+    const hasBrowserAsts = browserAstFile.hasMessageFunctions();
     // eslint-disable-next-line guard-for-in
     for (const n in this.astFiles) {
       const astFile = this.astFiles[n];
 
-      const astFileInfo = astFile.makeAst(n, scriptGlobalId);
+      const makeAstOptions = {};
+      if (n == 'content' && hasBrowserAsts) {
+        // browser script needs content script to start it.
+        // always include content script if we have something in browser script.
+        makeAstOptions.alwaysMake = true;
+      }
+      const astFileInfo = astFile.makeAst(n, scriptGlobalId, makeAstOptions);
       if (!astFileInfo) {
         continue;
       }
