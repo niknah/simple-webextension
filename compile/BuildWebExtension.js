@@ -187,8 +187,8 @@ export class BuildWebExtension {
         let buildDir;
         for (const userAgent in compileInfos) {
           const compileInfo = compileInfos[userAgent];
-          const zipFile = path.join(compileInfo.destDir, userAgent + '.zip');
           buildDir = compileInfo.buildDir;
+          const zipFile = path.join(buildDir, userAgent + '.zip');
           compileInfo.zipFile = zipFile;
           zipFiles.push({extensionDir: compileInfo.extensionDir, userAgent});
           p = p.then(() => {
