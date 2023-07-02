@@ -252,7 +252,9 @@ export class SplitWebExtension {
         this.addCall(className, b, destClassAsts);
       } else {
         const classOptions = this.processOptionsFromComments(b);
-        this.checkAstForComments(b);
+        if(b.type !== 'ExpressionStatement' && b.type !== 'BlockStatement') {
+          this.checkAstForComments(b);
+        }
         this.addToScriptTypes(classOptions, b, destClassAsts);
       }
     }

@@ -204,12 +204,6 @@ simpleWebExt.onAfterInit(() => {
   document.body.appendChild(document.createTextNode("Click on the \u{1f9e9} extensions menu and start the extension."));
 });
 
-// simplewebext background
-//simpleWebExt.onAfterInit(() => {
-//  if (browser && browser.browserAction && browser.browserAction.openPopup) {
-//    browser.browserAction.openPopup();
-//  }
-//});
 
 // simplewebext userAgent=firefox
 {
